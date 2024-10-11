@@ -1,0 +1,117 @@
+/* Overall styling for the landing page */
+.start {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  background: url('../assets/Landing_Bg.jpg') no-repeat center center/cover; /* Using background image */
+  font-family: 'Arial', sans-serif;
+  position: relative;
+  color: #fff;
+  overflow: hidden; /* Ensure no overflow of content */
+}
+
+/* Keyframes for the entrance animation from top */
+@keyframes slideDown {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Title coming down from the top with an effect */
+.startTitle {
+  position: absolute;
+  top: 10%;
+  left: 36%;
+  transform: translateX(-50%);
+  font-size: 3rem;
+  font-weight: bold;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  opacity: 0; /* Hidden initially */
+  animation: slideDown 2s ease forwards; /* Faster slide down animation */
+  background: linear-gradient(90deg, #bdb3489f, #f4a261); /* Blue to Purple */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* Text shadow for better readability */
+  text-shadow: 12px 12px 18px rgba(0, 0, 0, 0.4); /* Subtle shadow for better readability */
+}
+
+/* Container for input and button */
+.startContainer {
+  text-align: center;
+  padding: 50px;
+  background-color: rgba(255, 255, 255, 0.85); /* Semi-transparent white background */
+  border-radius: 12px;
+  /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); Enhanced shadow for depth */
+  z-index: 1;
+  max-width: 280px;
+  width: 90%; /* Make container responsive */
+}
+
+/* Clean and modern input box */
+.startInput {
+  padding: 15px;
+  width: 85%;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 8px;
+  outline: none;
+  margin-bottom: 20px;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.startInput::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+.startInput:focus {
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2); /* Focus effect */
+}
+
+/* Modern button styling */
+.startButton {
+  padding: 12px 30px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  background-color: #4a90e2;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.startButton:hover {
+  background-color: #357ABD;
+  transform: translateY(-3px); /* Lift effect on hover */
+}
+
+.startButton:active {
+  transform: translateY(1px); /* Subtle press effect */
+}
+
+/* Responsive input for smaller screens */
+@media (max-width: 768px) {
+  .startInput {
+      width: 100%;
+  }
+
+  .startTitle {
+      font-size: 2rem;
+  }
+
+  .startContainer {
+      padding: 30px;
+  }
+}

@@ -1,58 +1,34 @@
-import React, {useState, useEffect, useMemo} from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import axios from 'axios';
+
 import './app.css';
 import Trivia from './components/Trivia';
+import Start from "./components/Start";
 import Timer from './components/Timer';
+import ProgressBar from './components/ProgressBar';
+
 function App() {
-  const[questionNumber, setQuestionNumber] = useState(1);
+  const [questionNumber, setQuestionNumber] = useState(1);
   const [stop, setStop] = useState(false);
   const [earned, setEarned] = useState("$ 0");
-  const data = [
-    {
-      id:1, 
-      question: "AA ante??",
-      answers:[
-        {
-          text:"AlluArjun",
-          correct: false,
-        },
-        {
-          text:"AnnaAkkalu",
-          correct: true,
-        },
-        {
-          text:"AkhilAkkineni",
-          correct: false,
-        },
-        {
-          text:"None",
-          correct: false,
-        }
-      ]
-    },
-    {
-      id:2, 
-      question: "TT ante??",
-      answers:[
-        {
-          text:"ToxicTrio",
-          correct: true,
-        },
-        {
-          text:"TripleTrouble",
-          correct: false,
-        },
-        {
-          text:"Above2",
-          correct: false,
-        },
-        {
-          text:"None",
-          correct: false,
-        }
-      ]
-    }
-  ]
-  const moneyPyramid = useMemo(()=>
+  const [data, setData] = useState([]);
+  const [username, setUsername] = useState(null); // Added username state
+
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/questions');
+        console.log('Fetched questions:', response.data);
+        setData(response.data);
+      } catch (error) {
+        console.error('Error fetching questions:', error);
+      }
+    };
+
+    fetchQuestions();
+  }, []);
+
+  const moneyPyramid = useMemo(() =>
     [
       { id: 1, amount: "$ 100" },
       { id: 2, amount: "$ 200" },
@@ -69,43 +45,54 @@ function App() {
       { id: 13, amount: "$ 250.000" },
       { id: 14, amount: "$ 500.000" },
       { id: 15, amount: "$ 1.000.000" },
-    ].reverse() ,[]);
-    useEffect(()=>{
-      questionNumber > 1 && setEarned(moneyPyramid.find((m)=> m.id === questionNumber - 1).amount)
-    },[moneyPyramid, questionNumber]);
+    ].reverse(), []);
 
-    return (
+  useEffect(() => {
+    questionNumber > 1 && setEarned(moneyPyramid.find((m) => m.id === questionNumber - 1).amount);
+  }, [moneyPyramid, questionNumber]);
+
+  return (
     <div className="app">
-      <div className="main">
-        {stop?<h1 className="endText">You earned:{earned}</h1>:
-        (
-          <>
-          <div className="top">
-            <div className="timer">
-              <Timer setStop={setStop} questionNumber={questionNumber}/>
-            </div>
+      {!username ? (
+        <Start setUsername={setUsername} />
+      ) : (
+        <>
+          <div className="main">
+            {stop ? (
+              <h1 className="endText">{username} earned: {earned}</h1>
+            ) : (
+              <>
+                <div className="top">
+                  <div className="timer">
+                    <Timer setStop={setStop} questionNumber={questionNumber} />
+                  </div>
+                  <ProgressBar questionNumber={questionNumber} totalQuestions={data.length} /> {/* Add ProgressBar */}
+                </div>
+                <div className="bottom">
+                  {data.length > 0 && (
+                    <Trivia
+                      data={data}
+                      setStop={setStop}
+                      questionNumber={questionNumber}
+                      setQuestionNumber={setQuestionNumber}
+                    />
+                  )}
+                </div>
+              </>
+            )}
           </div>
-          
-          <div className="bottom">
-            <Trivia 
-              data={data} 
-              setStop={setStop}
-              questionNumber={questionNumber}
-              setQuestionNumber={setQuestionNumber}/>
-        </div></>
+          <div className="pyramid">
+            <ul className="moneylist">
+              {moneyPyramid.map((m) => (
+                <li key={m.id} className={questionNumber === m.id ? "mlitem active" : "mlitem"}>
+                  <span className='mlinum'>{m.id}</span>
+                  <span className='mlimon'>{m.amount}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </>
       )}
-      </div>
-
-      <div className="pyramid">
-        <ul className="moneylist">
-          {moneyPyramid.map((m) => (
-            <li className={questionNumber === m.id?"mlitem active" : "mlitem"}>
-              <span className='mlinum'>{m.id}</span>
-              <span className='mlimon'>{m.amount}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
     </div>
   );
 }

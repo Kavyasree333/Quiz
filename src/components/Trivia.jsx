@@ -8,6 +8,8 @@ const Trivia = ({ data, setStop, questionNumber, setQuestionNumber }) => {
     const[className, setClassName] =  useState(null);
 
     useEffect(()=>{
+        console.log('Data in Trivia:', data); // Debugging log
+        console.log('Current question number:', questionNumber); // Debugging log
         setQuestion(data[questionNumber-1])
     },[data, questionNumber]);
     
@@ -15,14 +17,20 @@ const Trivia = ({ data, setStop, questionNumber, setQuestionNumber }) => {
         setTimeout(()=>{
             callback();
         }, duration);
+    };
 
-    }
+    const playSound = (soundFile) => {
+        const audio = new Audio(soundFile);
+        audio.play();
+    };
+
     const handleClick = (a) =>{
         setSelectedAnswer(a);
         setClassName("answer active");
-        delay(3000,()=>
+        delay(3000,()=>{
             setClassName(a.correct? "answer correct" : "answer wrong")
-        );
+            playSound(a.correct ? '/sounds/correct_answer.mp3' : '/sounds/wrong_answer.mp3');
+        });
         delay(6000,()=>
         {
             if(a.correct){

@@ -13,5 +13,4 @@ const Timer = ({setStop,questionNumber}) => {
     },[questionNumber]);
     return timer
 }
- 
 export default Timer;
